@@ -1,0 +1,63 @@
+++docker run 
+
+docker run hello-world
+
+when docker runs image it runs a filesystem snapshot
+there is a default command that is run after container is made
+
+container > kernel > ram/network/cpu + commands like ls, echo and such( these are programs)
+
+
+override default command
+e.g
+docker run busybox echo hi there
+docker|run|image|override command
+
+
+++docker ps
+docker ps --all
+
+docker run busybox ping google.com
+will run continue to ping google until stopped, measures latency?
+
+container lifecycle
+creating and running are two different things
+dockerrun = docker create + docker start 
+
+docker start is about "default command"
+docker start -a container_ref
+-a is attach, so any output coming from container will output it to your 
+
+cant do on a exited container b/c cant replace default command
+docker start -a 2318239a echo bye there 
+
+deletes stopped containers and stuff, will prompt y/n
+docker system prune 
+
+look at output tht has been emitted by the container
+docker logs 
+
+docker stopped
+hardware singal - SIGTERM(terminate signal) will give container some time to do things and clean itself
+has a default timer of 10sec before it changes to docker kill 
+e.g ping command does not respond to sigterm b/c it wants to run forever
+docker kill 
+SIGKILL - means to shut down right now and dont do any additional work 
+
+
+multi command containers
+
+oddity with redis 
+redis-cli
+
+docker exec -it <container_ref> <command>
+docker exec -it asdasd redis-cli
+
+docker exec -it 12323ad sh
+^^ use shell program to send comamnds to container(differnet shells=bash,powershell,zsh, sh)
+most of the time will just use exec sh to poke around but dont use for default command for things like web servers and such
+
+Dockerfile Flow 
+Base image
+Commands to install dependecies and additionalprograms
+Command to run on container startup
