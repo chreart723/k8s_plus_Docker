@@ -57,7 +57,49 @@ docker exec -it 12323ad sh
 ^^ use shell program to send comamnds to container(differnet shells=bash,powershell,zsh, sh)
 most of the time will just use exec sh to poke around but dont use for default command for things like web servers and such
 
+
+Sec 3
+=> => means that buildkit is enabled
+disable buildkit in build runs with ; sudo DOCKER_BUILDKIT = 0 docker build .
+
 Dockerfile Flow 
 Base image
 Commands to install dependecies and additionalprograms
 Command to run on container startup
+
+Dockerfile > Docker Client > Docker Server > Usable Image
+
+docker build . 
+creates a docker image and shoots out the image id
+reference image id can be used for run,create and start   
+
+build process
+creates intermediate/temporary layers/containers for each instuction and does a file snapshot of the container 
+to create an image that is used to repeat the process for the next instruction. 
+docker CACHES these layers in order to make further builds fast 
+
+"if you ever want to make changes to your docker file in the future you want to make those lines 
+as down as possible b/c of cache"
+
+tag 
+
+docker build -t <project name or repository>:<tag text here>
+
+docker run -it alpine sh
+shell starts up
+apk add --update redis ; is ran inside of container
+open 2nd terminal
+docker ps 
+docker commit -c 'CMD ["redis-server"]' <container ref>
+^^takes snapshot of container and creates an image 
+docker commit is not really common, just use Dockerfile approach
+
+Sec 4 - project
+Create NODEjs web app 
+Create Dockerfile
+build image from Dockerfile
+run image as container
+connect to web app from browser
+
+will make mistakes on purpose that will run into while making projects by myself 
+tutorial points out these mistakes and solution for it 
