@@ -101,5 +101,108 @@ build image from Dockerfile
 run image as container
 connect to web app from browser
 
+Goal 
+Create a nodejs web app > wrap it in a docker container > access that web app from browser on local machine 
+
 will make mistakes on purpose that will run into while making projects by myself 
 tutorial points out these mistakes and solution for it 
+
+
+JS
+npm install needs a package.json file to find dependecies
+
+must specify 14-alpine version otherwise will see diff errors eg idealTree error when tryinbg to build iamge
+^^ e.g
+FROM node:14 alpine
+
+COPY ./ ./
+COPY <path of file on local machine> <target path in container>
+path of file on local machine is relative to build context aka ./ is simpweb/
+
+sec 5
+node app - web app
+redis - db 
+
+number of visits at web app
+can do node app and redis in same container but issue with scaling
+will shoot out different values to different users 
+
+solution - 
+have different docker containers with web app that will all
+connect to redis that will store the visit 
+
+for redis container;docker run redis
+
+how to connect two seperate containers  
+docker cli network feature
+docker compose
+    uses docker-compose.yml 
+    automatically connects containers created
+although they are connected
+in order for comm , we created a host in index.js aka 'redis-server' 
+tip: anywhere using connection URL/URI can use name of container and it 
+hostname will automatically be resolsved by docker
+
+docker run -d <image>
+-d is detached 
+
+start docker compose with services in background; docker-compose up -d
+shut down containers started by compose; docker-compose down
+
+const process = ('process')
+process.exit(0);
+will automatically stop the container b/c code stop running 
+exit status codes
+0 - we exit and evryting is ok
+1,2,3 etc exit b/c something went wrong 
+
+goal - heal container / automatically restart stopped/crashed container
+
+restart policy 
+"no" - never attempt to restart if stop/crash
+always - if this container stops for any reason always attempt to restart it
+on-failure - only restart if container crashes with error code
+unless-stopped - always restart unless stopped by developers
+
+"no" is different from no b/c in .yml no is a false boolean rather than the specific restart policy string "no" or 'no'
+on-failure doesnt work with exit code 0, change exit code in process.exit() to do this 
+make sure to rebuild 
+
+docker compose ps to look at services running
+uses current directory .yml file to figure out what containers to look for and then shoots out status
+
+Sec 6 - workflow
+development
+testing
+deployment
+
+Flow
+Github Repo 
+Feature branch; development branch 
+Master Branch; clean working version of code base 
+
+DEVELOP
+pull code 
+add code
+merge request
+feature branch 
+
+create pull request; feature branch->master branch
+code pushed to ->travisCI
+test run
+if ok merge PR with master
+push code to travisCI
+test run
+deploy
+
+npx create-react-app frontend
+
+npm run start; development only command, starts up a develop server not for prod
+npm run test; run tests
+npm run build; builds a prod version of app 
+
+two Dockerfiles
+develop
+npm run start 
+prod
+npm run build
